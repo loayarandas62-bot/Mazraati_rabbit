@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'mazraati-rabbits-independent-0.8.21.zip'
+      - mazraati-rabbits-independent-0.8.22.zip
       - '.github/workflows/android-apk.yml'
 
 permissions:
@@ -34,8 +34,8 @@ jobs:
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "platform-tools" "platforms;android-35" "build-tools;35.0.0"
       - name: Extract verified project archive
         run: |
-          test -f mazraati-rabbits-independent-0.8.21.zip
-          unzip -t mazraati-rabbits-independent-0.8.21.zip
+          test -f mazraati-rabbits-independent-0.8.22.zip
+          unzip -t mazraati-rabbits-independent-0.8.22.zip
           mkdir project
           unzip -q mazraati-rabbits-independent-0.8.21.zip -d project
           PROJECT_DIR="$(find project -name package.json -type f -print -quit | xargs dirname)"
