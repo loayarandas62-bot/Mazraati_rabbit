@@ -1,0 +1,31 @@
+name: Verify uploaded release
+
+on:
+  push:
+    paths:
+      - "*.zip"
+      - ".github/workflows/verify-release.yml"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify ZIP and project checks
+        shell: bash
+        run: |
+          ZIP="$(find . -maxdepth 1 -type f -name '*.zip' -printf '%T@ %p\n' | sort -nr | head -n1 | cut -d' ' -f2-)"
+          test -n "$ZIP"
+          unzip -t "$ZIP"
+          mkdir release
+          unzip -q "$ZIP" -d release
+          PACKAGE="$(find release -name package.json -type f -print -quit)"
+          test -n "$PACKAGE"
+          PROJECT_DIR="$(dirname "$PACKAGE")"
+          cd "$PROJECT_DIR"
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+          npm run check --if-present
+          npm test --if-present
+          npm run build --if-present
